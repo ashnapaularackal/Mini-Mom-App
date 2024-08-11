@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Mom - Specify Location</title>
+    <style>
+         body {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-in-out;
+            margin: 20px; /* Add margin to ensure space when scrolling */
+            width: 90%;
+            max-width: 800px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .ai-mom {
+            width: 100%;
+            max-width: 300px;
+            animation: talk 1s infinite alternate;
+        }
+        @keyframes talk {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .speech-bubble {
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 20px;
+            display: inline-block;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            text-align: center;
+            animation: bubble 2s infinite alternate;
+            margin-bottom: 20px;
+        }
+        @keyframes bubble {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            margin-left: -20px;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #fff;
+        }
+        header {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1s ease-in-out;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            color: #555;
+            margin: 10px 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul li {
+            font-size: 1.2em;
+            margin: 5px 0;
+            color: #333;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 5px 0;
+            color: #333;
+        }
+        audio {
+            margin-top: 15px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        a:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            var audio = document.getElementById('voiceResponse');
+            var locationInput = document.getElementById('locationInput');
+            var listeningIndicator = document.getElementById('listeningIndicator');
+            var reminderForm = document.getElementById('reminderForm');
+
+            if (audio) {
+                audio.play();
+                audio.onended = function() {
+                    startSpeechRecognition();
+                };
+            }
+
+            function startSpeechRecognition() {
+                var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = function() {
+                    listeningIndicator.style.display = 'block';
+                };
+
+                recognition.onresult = function(event) {
+                    var transcript = event.results[0][0].transcript;
+                    locationInput.value = transcript;
+                    listeningIndicator.style.display = 'none';
+
+                    // Short delay before submitting the form
+                    setTimeout(function() {
+                        reminderForm.submit();
+                    }, 1500); // 1.5 seconds delay
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    listeningIndicator.style.display = 'none';
+                };
+
+                recognition.onend = function() {
+                    listeningIndicator.style.display = 'none';
+                };
+
+                recognition.start();
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>Mini Mom</header>
+    <div class="container">
+        <img src="data:image/png;base64,{{ ai_mom_image }}" alt="AI Mom" class="ai-mom">
+        <div class="speech-bubble">
+            <h1>Where is your {{ destination }}?</h1>
+            <audio id="voiceResponse" autoplay>
+                <source src="{% url 'serve_audio' prompt_file %}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <form id="reminderForm" method="post" action="{% url 'get_reminders' %}">
+                {% csrf_token %}
+                <input type="hidden" name="destination" value="{{ destination }}">
+                <input type="text" id="locationInput" name="location" placeholder="Enter the location" required>
+                <button type="submit">Get Reminders</button>
+            </form>
+            <div id="listeningIndicator">Listening...</div>
+        </div>
+    </div>
+</body>
+</html>

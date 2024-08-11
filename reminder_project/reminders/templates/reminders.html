@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Daily Reminders</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-in-out;
+            margin: 20px; /* Add margin to ensure space when scrolling */
+            width: 90%;
+            max-width: 800px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .ai-mom {
+            width: 100%;
+            max-width: 300px;
+            animation: talk 1s infinite alternate;
+        }
+        @keyframes talk {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .speech-bubble {
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 20px;
+            display: inline-block;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            text-align: center;
+            animation: bubble 2s infinite alternate;
+            margin-bottom: 20px;
+        }
+        @keyframes bubble {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            margin-left: -20px;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #fff;
+        }
+        header {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1s ease-in-out;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            color: #555;
+            margin: 10px 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul li {
+            font-size: 1.2em;
+            margin: 5px 0;
+            color: #333;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 5px 0;
+            color: #333;
+        }
+        audio {
+            margin-top: 15px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #f6d365;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        a:hover {
+            background-color: #fda085;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>Mini Mom</header>
+    <div class="container">
+        <img src="data:image/png;base64,{{ ai_mom_image }}" alt="AI Mom" class="ai-mom">
+        <div class="speech-bubble">
+            <h1>Dear,Reminders for going to {{ destination }}</h1>
+            {% if location %}
+            <h2>Location: {{ location }}</h2>
+            {% endif %}
+            <h2>Don't forget:</h2>
+            <ul>
+                {% for reminder in reminders %}
+                    <li>{{ reminder }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Weather Update:</h2>
+            <p>{{ weather_info }}</p>
+            <h2>Traffic Update:</h2>
+            <p>{{ traffic_info }}</p>
+        </div>
+        <h2>Voice Response:</h2>
+        <audio id="voiceResponse" autoplay controls>
+            <source src="{% url 'serve_audio' voice_file %}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <a href="{% url 'home' %}">Plan Another Trip</a>
+    </div>
+</body>
+</html>
