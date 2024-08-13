@@ -1,13 +1,17 @@
 Mini Mom App: A Virtual Mom for Those Far from Home
 
-Many people who migrate abroad often miss the comforting presence of their mothers. They face challenges like managing daily tasks, staying updated on weather conditions, and navigating traffic while being away from their family’s care. The Mini Mom app is designed specifically for individuals in this situation.
+For many who miss their mom and are far from home, daily life can feel challenging without her comforting presence. The Mini Mom App acts as a caring companion, offering personalized reminders, weather updates, and traffic alerts to help users manage tasks with a sense of maternal care.
 
-Our app serves as a caring companion, offering personalized reminders, weather updates, and traffic alerts tailored to the user's needs. It helps users manage their day-to-day tasks with a sense of maternal care, reminding them of essential items, important appointments, and necessary precautions for their outings.
+How It Works
+Developed for the Gemini API Developer Competition, the app leverages the Gemini API to provide thoughtful advice that mimics a mother’s nurturing guidance. For regular destinations like school, office, or the gym, Mini Mom uses the user’s current location, just as a mom would naturally know. For less frequent destinations like a party or interview, the app prompts the user for the location to deliver tailored reminders, weather updates, and traffic information.
 
-Developed for the Gemini API Developer Competition, Mini Mom leverages the Gemini API to provide thoughtful, customized advice that mimics the nurturing guidance of a mother. By integrating weather and traffic information, the app ensures users are well-prepared and informed, easing their daily lives and bringing a touch of home to wherever they are.
+Setup Instructions
+To get started, add the line GEMINI_API_KEY=yourkey to your .env file.
 
-The positive impact of Mini Mom lies in its ability to bridge the emotional gap for those living away from their families, offering practical support and emotional comfort.
+The Mini Mom App bridges the emotional gap for those far from home, offering practical support and comfort, making users feel closer to their loved ones.
 
+Check out the project on GitHub: https://github.com/ashnapaularackal/Mini-Mom-App
 
+Don't forget anything important—let Mini Mom remind you!
 
-To test it add the line  GEMINI_API_KEY =yourkey  in .env file
+My portfolio: https://sites.google.com/view/ashnapaul/home
