@@ -5,7 +5,6 @@ from gtts import gTTS
 import os
 from django.conf import settings
 from .models import Destination
-import base64
 from .utils import get_encoded_ai_mom_image
 
 def home(request):
@@ -15,14 +14,15 @@ def home(request):
         'ai_mom_image': get_encoded_ai_mom_image()
     }
     return render(request, 'home.html', context)
+
 def get_reminders_view(request):
     if request.method == 'POST':
         destination = request.POST.get('destination', '').lower()
         location = request.POST.get('location', '')
+        current_location = request.POST.get('current_location', '')
 
         # Use current location for common destinations
-        if destination in ['school', 'office', 'gym', 'college']:
-            current_location = get_current_location()
+        if destination in ['school', 'office', 'gym', 'college'] and current_location:
             reminders = get_personalized_reminders(destination, current_location)
             weather_info = get_weather_info(current_location)
             traffic_info = get_traffic_info(current_location)
@@ -33,10 +33,9 @@ def get_reminders_view(request):
             weather_info = get_weather_info(location)
             traffic_info = get_traffic_info(location)
 
-
         destination_obj, created = Destination.objects.get_or_create(
             name=destination,
-            defaults={'description': ''}  # Provide a default description
+            defaults={'description': ''}
         )
 
         # Generate voice response
@@ -45,7 +44,7 @@ def get_reminders_view(request):
 
         context = {
             'destination': destination,
-            'location': location or current_location,
+            'location': location or 'Current Location',
             'reminders': reminders,
             'weather_info': weather_info,
             'traffic_info': traffic_info,
@@ -55,10 +54,6 @@ def get_reminders_view(request):
         return render(request, 'reminders.html', context)
 
     return redirect('home')
-
-def get_current_location():
-
-    return "Current Location"
 
 def serve_audio(request, filename):
     file_path = os.path.join(settings.MEDIA_ROOT, filename)
@@ -91,6 +86,3 @@ def ask_location(request, destination):
         'ai_mom_image': get_encoded_ai_mom_image()
     }
     return render(request, 'ask_location.html', context)
-
-
-

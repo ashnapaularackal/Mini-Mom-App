@@ -3,7 +3,7 @@
 <head>
     <title>Mini Mom - Daily Reminders</title>
     <style>
-            body {
+        body {
             background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -114,7 +114,14 @@
             background-color: #45a049;
             transform: scale(1.05);
         }
+        #listeningIndicator {
+            display: none;
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 10px;
+        }
     </style>
+
     <script>
         window.onload = function() {
             var audio = document.getElementById('voiceResponse');
@@ -144,10 +151,8 @@
                     destinationInput.value = transcript;
                     listeningIndicator.style.display = 'none';
 
-                    // Short delay before submitting the form
-                    setTimeout(function() {
-                        reminderForm.submit();
-                    }, 1500); // 1.5 seconds delay
+                    // Get user's location before submitting the form
+                    getLocationAndSubmit();
                 };
 
                 recognition.onerror = function(event) {
@@ -160,6 +165,33 @@
                 };
 
                 recognition.start();
+            }
+
+            function getLocationAndSubmit() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude;
+                        var locationInput = document.createElement('input');
+                        locationInput.type = 'hidden';
+                        locationInput.name = 'current_location';
+                        locationInput.value = latitude + ',' + longitude;
+                        reminderForm.appendChild(locationInput);
+
+                        // Short delay before submitting the form
+                        setTimeout(function() {
+                            reminderForm.submit();
+                        }, 1500); // 1.5 seconds delay
+                    }, function(error) {
+                        console.error('Geolocation error:', error.message);
+                        // Proceed without location
+                        reminderForm.submit();
+                    });
+                } else {
+                    console.error('Geolocation is not supported by this browser.');
+                    // Proceed without location
+                    reminderForm.submit();
+                }
             }
         }
     </script>
