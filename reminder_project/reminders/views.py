@@ -38,7 +38,7 @@ def get_reminders_view(request):
             defaults={'description': ''}
         )
 
-        # Generate voice response
+
         voice_text = f"Reminders for {destination}: {', '.join(reminders)}. Weather: {weather_info}. Traffic: {traffic_info}."
         voice_file = generate_voice_response(voice_text)
 

@@ -178,13 +178,13 @@
                         locationInput.value = latitude + ',' + longitude;
                         reminderForm.appendChild(locationInput);
 
-                        // Short delay before submitting the form
+
                         setTimeout(function() {
                             reminderForm.submit();
-                        }, 1500); // 1.5 seconds delay
+                        }, 1500);
                     }, function(error) {
                         console.error('Geolocation error:', error.message);
-                        // Proceed without location
+
                         reminderForm.submit();
                     });
                 } else {
